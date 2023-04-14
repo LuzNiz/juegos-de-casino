@@ -1,41 +1,33 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Player = void 0;
-var Player = /** @class */ (function () {
-    function Player(firstName, lastName, edad, email) {
+class Player {
+    constructor(firstName, lastName, edad) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
-        this.tokens = 50;
+        this.availableMoney = 0;
     }
     //Getters and setters
-    Player.prototype.getFirstName = function () {
+    getFirstName() {
         return this.firstName;
-    };
-    Player.prototype.setFirstName = function (firstName) {
+    }
+    setFirstName(firstName) {
         this.firstName = firstName;
-    };
-    Player.prototype.getLastName = function () {
+    }
+    getLastName() {
         return this.lastName;
-    };
-    Player.prototype.setLastName = function (lastName) {
+    }
+    setLastName(lastName) {
         this.lastName = lastName;
-    };
-    Player.prototype.getEmail = function () {
-        return this.email;
-    };
-    Player.prototype.setEmail = function (email) {
-        this.email = email;
-    };
-    Player.prototype.getTokens = function () {
-        return this.tokens;
-    };
-    Player.prototype.setTokens = function (tokens) {
-        this.tokens = tokens;
-    };
-    Player.prototype.showData = function () {
+    }
+    getvailableMoney() {
+        return this.availableMoney;
+    }
+    setAvailableMoney(money) {
+        this.availableMoney = money;
+    }
+    showData() {
         return this;
-    };
-    return Player;
-}());
+    }
+}
 exports.Player = Player;
