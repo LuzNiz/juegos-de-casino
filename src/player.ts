@@ -1,14 +1,12 @@
 export class Player {
     private firstName: string;
     private lastName: string;
-    private email: string;
-    private tokens: number;
+    private availableMoney: number;
 
-    public constructor(firstName: string, lastName: string, edad: number, email: string){
+    public constructor(firstName: string, lastName: string, edad: number){
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
-        this.tokens = 50;
+        this.availableMoney = 0;
     }
     //Getters and setters
     public getFirstName(): string{
@@ -25,18 +23,11 @@ export class Player {
         this.lastName = lastName;
     }
 
-    public getEmail(): string{
-        return this.email;
+    public getvailableMoney(): number{
+        return this.availableMoney;
     }
-    public setEmail(email: string): void{
-        this.email = email;
-    }
-
-    public getTokens(): number{
-        return this.tokens;
-    }
-    public setTokens(tokens: number): void{
-        this.tokens = tokens;
+    public setAvailableMoney(money: number): void{
+        this.availableMoney = money;
     }
 
     public showData(): Player{

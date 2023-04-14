@@ -1,65 +1,85 @@
 import { Player } from "./player";
 import { Game } from "./game";
 import * as readlineSync from 'readline-sync';
+import * as fs from 'fs';
 
 export class Casino {
     private name: string;
-    private tokensValue: number;
-    private player: Player;
-    private cantidadMinFichas: number
-    private game: Game;
+    private minimumMoney: number;
+    private minimumAgeAllowed: number;
+    
 
-    public constructor(name: string, tokensValue: number, cantidadMinFichas : number){
+    public constructor(name: string, cantidadMinFichas : number, minimumAgeAllowed: number){
         this.name = name;
-        this.tokensValue = tokensValue;
-        this.cantidadMinFichas = cantidadMinFichas;
-        this.player = this.getPlayer();
-        this.game = new Game;
-
+        this.minimumMoney = cantidadMinFichas;
+        this.minimumAgeAllowed = minimumAgeAllowed;
     }
-    public getName(): string{
-        return this.name;
-    }
+    
+    //GETTERS AND SETTERS
 
-    public buyTokens(): void{
-        let money = readlineSync.questionInt("Ingrese cantidad de dinero: ");
-        while(money < this.tokensValue){
-            console.log(`Por favor ingrese un monto mayor a ${this.tokensValue}`);
-            money = readlineSync.questionInt("Ingrese cantidad de dinero: ");
+    public getName(): string {return this.name};
+    public setName(name: string): void{ this.name = name};
+
+    public getMinimumMoney(): number { return this.minimumMoney}
+    public setMinimumMoney(minimumMoney: number): void {this.minimumMoney = minimumMoney};
+
+    private provideAccess(age: number): boolean{
+        let access = false;
+        if(age >= this.minimumAgeAllowed){
+            access = true;
         }
-        let tokens = money / this.tokensValue;
-        let tokensActuales = this.player.getTokens();
-        this.player.setTokens(tokensActuales + tokens);
-        console.log(`Usted compró ${tokens} fichas`)
+        return access;
     }
 
+    private readFile(file: string): string {
+        let text = fs.readFileSync(file, 'utf-8');
+        return text;
+    }    
 
-    public welcome(player: Player): string{
-        return `Bienvenido ${player.getFirstName} ${player.getLastName}`
+    private welcome(name: string): void{
+        let messagePropio = `Bienvenido ${name} al casino ${this.name}`;
+        //let welcomeMessage = this.readFile("./files/welcome.txt");
+        console.log(messagePropio);
+        //console.log(welcomeMessage);
     }
 
-    private pedirEdad(): number{
-        let edad = readlineSync.questionInt("Ingrese su edad: ");
-        return edad;
+    private selectGame() {
+        let juegos: string[] = ['BlackJack', 'Ruleta', 'Tragamonedas'];
+        let option: number = readlineSync.keyInSelect(juegos);
+        if(option === 0){
+            console.log('Selecciono BlackJack')
+            //let blackjack: BlackJack = new BlackJack()
+        }else if(option === 1){
+            console.log('Selecciono Ruleta')
+            //let ruleta: Ruleta = new ruleta();
+        }else if(option === 2) {
+            console.log('Selecciono Tragamonedas')
+            let type = ['Tragamonedas regular', 'Tragamonedas Progresivo']
+            let tipo = readlineSync.keyInSelect(type);
+            if(tipo === 1){
+                //let tragamonedas1 = new Tragamonedas1;
+            }
+        }
     }
-    public iniciarSesion(){
-        let edad = this.pedirEdad();
-        if(edad >= 18 && edad < 95){
-            let firstName = readlineSync.question("Ingrese su nombre: ");
-            let lastName = readlineSync.question("Ingrese su apellido: ");
-            let email= readlineSync.questionEMail("Ingrese su email: ");
-            let player = new Player(firstName, lastName, edad, email);
-            this.newPlayer(player);
+
+    public play(){
+        //let infoJuegos = this.readFile('./files/infoJuegos.txt');
+        let money = readlineSync.questionInt('Ingrese el monto de dinero con el que desea jugar: ');
+        this.selectGame();
+    }
+
+    public app(){
+        let age = readlineSync.questionInt('Por favor, ingrese su edad: ');
+        let access = this.provideAccess(age);
+        if(access){
+            let firstName = readlineSync.question('Ingrese su nombre: ');
+            let lastName = readlineSync.question('Ingrese su apellido: ');
+            let player = new Player(firstName, lastName, age);
+            this.welcome(firstName);
+            this.play();
         }else {
-            console.log("Usted es menor de edad, no puede ingresar a jugar");
+            console.log('Usted es menor de edad. No puede jugar en este casino');
         }
     }
 
-    public newPlayer(player: Player): void{
-        this.player = player;
-    }
-
-    public getPlayer(): Player{
-        return this.player;
-    }
 }
