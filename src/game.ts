@@ -1,13 +1,17 @@
-export class Juego{
-  private name;
-  private minBet;
-  private probWinning;
+import { Casino } from "./casino";
+
+ export class Game {
+  private name: string;
+  private minBet: number;
+  private probWinning: number;
+ private  amountPlayer: number;
 
 
-  constructor (pName: string, pMinBet: number, pProbWinning: number){
+  constructor (pName: string, pMinBet: number, pProbWinning: number, pAmountPlayer:number){
     this.name = pName;
     this.minBet = pMinBet;
     this.probWinning = pProbWinning;
+    this.amountPlayer= pAmountPlayer;
   }
   
   public getName(): string{

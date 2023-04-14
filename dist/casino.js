@@ -1,79 +1,57 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.Casino = void 0;
-const juego_1 = require("./juego");
-const jugador_1 = require("./jugador");
-const readlineSync = __importStar(require("readline-sync"));
-class Casino {
-    constructor(pName, pTokenValue, pMinTokens) {
+var juego_1 = require("../src/game");
+var jugador_1 = require("../src/jugador");
+var readlineSync = require("readline-sync");
+var Casino = /** @class */ (function () {
+    function Casino(pName, pTokenValue, pMinTokens) {
         this.name = pName;
         this.tokenValue = pTokenValue;
         this.minTokens = pMinTokens;
         this.game = new juego_1.Juego;
         this.player = this.getPlayer();
     }
-    getName() {
+    Casino.prototype.getName = function () {
         return this.name;
-    }
-    buyTokens() {
-        let money = readlineSync.questionInt("Ingrese cantidad de dinero: ");
+    };
+    Casino.prototype.buyTokens = function () {
+        var money = readlineSync.questionInt("Ingrese cantidad de dinero: ");
         while (money < this.tokenValue) {
-            console.log(`Por favor ingrese un monto mayor a ${this.tokenValue} `);
+            console.log("Por favor ingrese un monto mayor a ".concat(this.tokenValue, " "));
             money = readlineSync.questionInt("Ingrese cantidad de dinero: ");
         }
-        let tokens = money / this.tokenValue;
-        let tokensActuales = this.player.getTokens();
+        var tokens = money / this.tokenValue;
+        var tokensActuales = this.player.getTokens();
         this.player.setTokens(tokensActuales + tokens);
-        console.log(`Usted compró ${tokens} fichas`);
-    }
-    Welcome(player) {
-        return `Bienvenido ${player.getName}  ${player.getSurname} `;
-    }
-    Age() {
-        let age = readlineSync.questionInt("Ingrese su edad:");
+        console.log("Usted compr\u00F3 ".concat(tokens, " fichas"));
+    };
+    Casino.prototype.Welcome = function (player) {
+        return "Bienvenido ".concat(player.getName, "  ").concat(player.getSurname, " ");
+    };
+    Casino.prototype.Age = function () {
+        var age = readlineSync.questionInt("Ingrese su edad:");
         return age;
-    }
-    login() {
-        let age = this.Age();
+    };
+    Casino.prototype.login = function () {
+        var age = this.Age();
         if (age >= 18 && age < 100) {
-            let name = readlineSync.question("Ingrese su nombre: ");
-            let surname = readlineSync.question("Ingrese su apellido: ");
-            let mail = readlineSync.questionEMail("Ingrese su email:");
-            let player = new jugador_1.Player(name, surname, age, mail);
+            var name_1 = readlineSync.question("Ingrese su nombre: ");
+            var surname = readlineSync.question("Ingrese su apellido: ");
+            var mail = readlineSync.questionEMail("Ingrese su email:");
+            var player = new jugador_1.Player(name_1, surname, age, mail);
             this.newPlayer(player);
         }
         else {
             console.log("Usted es menor de edad, no puede ingresar a jugar");
         }
-    }
-    newPlayer(player) {
+    };
+    Casino.prototype.newPlayer = function (player) {
         this.player = player;
-    }
-    getPlayer() {
+    };
+    Casino.prototype.getPlayer = function () {
         return this.player;
-    }
-}
+    };
+    return Casino;
+}());
 exports.Casino = Casino;
