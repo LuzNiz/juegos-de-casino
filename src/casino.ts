@@ -1,4 +1,4 @@
-import { Player } from "./player";
+import { Player } from './player';
 import * as readlineSync from 'readline-sync';
 import * as fs from 'fs';
 import clear from 'clear';
