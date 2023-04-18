@@ -22,79 +22,124 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Casino = void 0;
 const player_1 = require("./player");
 const readlineSync = __importStar(require("readline-sync"));
 const fs = __importStar(require("fs"));
+const clear_1 = __importDefault(require("clear"));
 class Casino {
-    constructor(name, cantidadMinFichas, minimumAgeAllowed) {
-        this.name = name;
-        this.minimumMoney = cantidadMinFichas;
+    constructor(name, minimumAgeAllowed) {
+        this.casinoName = name;
         this.minimumAgeAllowed = minimumAgeAllowed;
     }
     //GETTERS AND SETTERS
-    getName() { return this.name; }
+    getCasinoName() { return this.casinoName; }
     ;
-    setName(name) { this.name = name; }
+    setCasinoName(casinoName) { this.casinoName = casinoName; }
     ;
-    getMinimumMoney() { return this.minimumMoney; }
-    setMinimumMoney(minimumMoney) { this.minimumMoney = minimumMoney; }
+    getMinimumAgeAllowed() { return this.minimumAgeAllowed; }
+    setMinimumAgeAllowed(minimumAgeAllowed) { this.minimumAgeAllowed = minimumAgeAllowed; }
     ;
+    //METODO PARA BORRAR LA CONSOLA
+    clearConsole() {
+        (0, clear_1.default)();
+    }
+    //METODO PARA VERIFICAR SI CUMPLE CON LOS REQUISITOS DE EDAD PARA INGRESAR
     provideAccess(age) {
         let access = false;
-        if (age >= this.minimumAgeAllowed) {
+        if (age !== 0 && age >= this.minimumAgeAllowed && age <= 99) { //Verifico si la edad es mayor o igual a la edad minima permitida
             access = true;
         }
         return access;
     }
+    //METODO QUE USA EL MODULO FS PARA LEER ARCHIVOS .TXT
     readFile(file) {
-        let text = fs.readFileSync(file, 'utf-8');
-        return text;
+        let readedText = fs.readFileSync(file, 'utf-8'); //utilizo el metodo readFileSync del modulo fs
+        return readedText; //Retorno el texto leído del archivo
     }
+    //METODO PARA DARLE LA BIENVENIDA AL JUGADOR
     welcome(name) {
-        let messagePropio = `Bienvenido ${name} al casino ${this.name}`;
-        //let welcomeMessage = this.readFile("./files/welcome.txt");
-        console.log(messagePropio);
-        //console.log(welcomeMessage);
+        let personalizedMessage = `Bienvenido ${name} al casino ${this.casinoName}`; //Creo un mensaje personalizado
+        console.log(personalizedMessage);
     }
+    //METODO QUE PERMITE SELECCIONAR EL JUEGO
     selectGame() {
-        let juegos = ['BlackJack', 'Ruleta', 'Tragamonedas'];
-        let option = readlineSync.keyInSelect(juegos);
+        console.log('Seleccione el juego que quiere jugar');
+        let games = ['BlackJack', 'Ruleta', 'Tragamonedas']; //Declaro en un array las opciones
+        let option = readlineSync.keyInSelect(games); //Le paso al modulo keyInSelect el array
         if (option === 0) {
+            this.clearConsole();
             console.log('Selecciono BlackJack');
+            const reglasBlackJack = this.readFile('../files/infoBlackJack.txt');
+            console.log(reglasBlackJack);
             //let blackjack: BlackJack = new BlackJack()
         }
         else if (option === 1) {
+            this.clearConsole();
             console.log('Selecciono Ruleta');
             //let ruleta: Ruleta = new ruleta();
         }
         else if (option === 2) {
-            console.log('Selecciono Tragamonedas');
+            this.clearConsole();
+            console.log('Selecciono Tragamonedas. Por favor seleccione el tipo de tragamonedas con el que quiere jugar');
             let type = ['Tragamonedas regular', 'Tragamonedas Progresivo'];
-            let tipo = readlineSync.keyInSelect(type);
-            if (tipo === 1) {
+            let typeSlots = readlineSync.keyInSelect(type);
+            if (typeSlots === 1) {
                 //let tragamonedas1 = new Tragamonedas1;
             }
         }
     }
-    play() {
-        //let infoJuegos = this.readFile('./files/infoJuegos.txt');
-        let money = readlineSync.questionInt('Ingrese el monto de dinero con el que desea jugar: ');
-        this.selectGame();
+    //CONSULTAR SALDO
+    checkBalance(player) {
+        console.log(`
+        ------------------------------------------------------
+        Su saldo actual es de: $ ${player.getvailableMoney()}
+        ------------------------------------------------------
+        `);
     }
-    app() {
-        let age = readlineSync.questionInt('Por favor, ingrese su edad: ');
-        let access = this.provideAccess(age);
-        if (access) {
-            let firstName = readlineSync.question('Ingrese su nombre: ');
-            let lastName = readlineSync.question('Ingrese su apellido: ');
-            let player = new player_1.Player(firstName, lastName, age);
-            this.welcome(firstName);
-            this.play();
+    //METODO PARA INGRESAR DINERO
+    setMoney(player) {
+        let money = readlineSync.questionInt('Ingrese el monto de dinero con el que desea jugar: ');
+        if (money !== 0 && money < 1000000) {
+            player.setAvailableMoney(money);
+            this.clearConsole();
+            this.checkBalance(player);
         }
         else {
-            console.log('Usted es menor de edad. No puede jugar en este casino');
+            throw new Error('Por favor, ingrese un monto mayor a $0 y menor de $1.000.000');
+        }
+    }
+    //METODO QUE INSTANCIA UN JUGADOR
+    newPlayer() {
+        let firstName = readlineSync.question('Ingrese su nombre: ');
+        let lastName = readlineSync.question('Ingrese su apellido: ');
+        let player = new player_1.Player(firstName, lastName);
+        return player;
+    }
+    //METODO QUE PERMITE AL JUGADOR JUGAR
+    play(player) {
+        let infoGames = this.readFile('../files/infoJuegos.txt');
+        console.log(infoGames);
+        this.selectGame();
+    }
+    //METODO PARA CORRER LA APLICACION
+    app() {
+        const age = readlineSync.questionInt('Por favor, ingrese su edad: '); //Pido al jugador su edad
+        const access = this.provideAccess(age); //Valido la edad ingresada
+        if (access) { //Si cumple con la edad minima:
+            let player = this.newPlayer(); //Instancio un nuevo jugador
+            let welcomeMessage = this.readFile("../files/welcome.txt"); //Leo las reglas del casino desde archivo txt
+            console.log(welcomeMessage);
+            this.welcome(player.getFirstName()); //Le doy la bienvenida
+            this.setMoney(player);
+            this.play(player); //Corro la función para que el jugador juege
+        }
+        else {
+            console.log(`Lamentablemente, debido a las restricciones de edad, no es posible que juegues en nuestro casino si eres menor de ${this.minimumAgeAllowed} años.`);
         }
     }
 }
