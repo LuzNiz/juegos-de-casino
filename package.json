@@ -21,9 +21,11 @@
   },
   "homepage": "https://github.com/LuzNiz/trabajo-final-poo#readme",
   "dependencies": {
+    "clear": "^0.1.0",
     "readline-sync": "^1.4.10"
   },
   "devDependencies": {
+    "@types/clear": "^0.1.2",
     "@types/node": "^18.15.11",
     "@types/readline-sync": "^1.4.4"
   }

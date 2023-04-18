@@ -1,0 +1,12 @@
+------------------------------------------------------------------------------------------------------------
+                                           B L A C K J A C K
+------------------------------------------------------------------------------------------------------------
+MODALIDAD DE JUEGO:
+En el juego, el crupier será el encargado de distribuir las cartas, con la posibilidad de entregar hasta 3 cartas 
+por apuesta. Una vez que los jugadores tengan sus cartas, el crupier procederá a repartir las cartas para la banca. 
+Al finalizar el juego, se mostrará el resultado de ambos jugadores para conocer quién ha ganado.
+
+PREMIOS DEL JUEGO:
+    Si el jugador obtiene una puntuación de 21 (+-5), ganará el 30% de la cantidad apostada.
+    Si el jugador obtiene una puntuación menor a 21 (+-5) pero mayor que la de la banca, no ganará ni perderá.
+    Si el jugador obtiene una puntuación menor a 21 (+-5) y menor que la de la banca, perderá la apuesta.

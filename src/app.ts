@@ -1,8 +1,9 @@
-import * as readlineSync from 'readline-sync';
 import { Casino } from './casino';
+//INSTANCIO EL CASINO
+const casino = new Casino("Las vegas", 18); 
 
-let casino = new Casino("Las vegas", 20, 18);
-casino.app();
+//CORRO EL PROGRAMA
+casino.app(); 
 
 
 
