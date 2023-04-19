@@ -1,0 +1,42 @@
+------------------------------------------------------------------------------------------------------------------
+                                         CASO DE USO
+------------------------------------------------------------------------------------------------------------------
+
+TITULO: Jugar juego de casino en línea
+
+ACTORES: Usuario
+
+DESCRIPCIÓN: El usuario desea jugar a los juegos de un casino en un programa para consola.
+
+PRECONDICIONES: El usuario debe ser mayor de la edad impuesta por el casino como edad minima para ingresar 
+a jugar.
+
+FLUJO BÁSICO:
+
+    1- El usuario ingresa su edad. Si la edad es mayor o igual a la admitida, puede continuar;
+    2- Ingresa su nombre;
+    3- Ingresa su apellido;
+    4- El casino le da la bienvenida;
+    5- Ingresa el monto de dinero con el que quiere jugar;
+    6- El casino le muestra las opciones de juego;
+    7- El usuario elige el juego con el que desea jugar;
+    8- El usuario ingresa la cantidad de dinero que desea apostar;
+    9- El casino muestra si el jugador ganó o perdió. Deposita o debita el dinero según el caso;
+    10- El casino pregunta si quiere seguir jugando al mismo juego;
+    11- El casino pregunta si quiere cambiar de juego;
+    12- El jugador cobra su premio;
+    13- El jugador sale del programa;
+    14- El casino despide al jugador;
+
+
+POSTCONDICIONES: -.
+
+EXCEPCIONES:
+
+    - Si el valor de la apuesta es menor al valor mínimo de apuesta, el casino lanza un mensaje diciendo 
+    que el monto es insuficiente y le pregunta al usuario si desea ingresar más dinero para 
+    continuar jugando.
+    - Si el usuario ingresa una edad menor a la admitida, el casino lanza un mensaje diciendo que el 
+    usuario no cumple con las precondiciones para jugar y no le permite continuar.
+    - Si el usuario no ingresa su nombre o apellido, el casino lanza un mensaje diciendo que el 
+    nombre o apellido es obligatorio y le pide al usuario que los ingrese nuevamente.

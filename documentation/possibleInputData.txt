@@ -1,0 +1,33 @@
+------------------------------------------------------------------------------------------------------------------
+                                        POSIBLES DATOS DE ENTRADA
+------------------------------------------------------------------------------------------------------------------
+Ante los posibles escenarios de entrada de datos, ver las validaciones necesarias para evitar ingresos de datos
+erroneos
+
+AGE (campo para preguntar la edad - type: number):
+    - age = 0;
+    - age = 18;
+    - age < 18;
+    - age > 18;
+    - age > 100;
+    - age.lenght > 2
+    - age typeOf string; //Solucionado con readlineSync;
+
+FIRSTNAME / LASTNAME (campo para preguntar el nombre y el apellido - type: string):
+    - firstName/ lastName typeOf number;
+    - firstName / lastName contains symbols;
+
+MONEY (campo para preguntar el dinero que desea ingresar - type: number)
+    - money = 0;
+    - money < 0;
+    - money.lenght > 7;
+
+BETVALUE (campo para ingresar el monto que desea apostar - type: number)   
+    - apuesta = 0;
+    - apuesta < 0;
+    - apuesta < money;
+    - apuesta > money;
+    - apuesta = money;
+    - apuesta > apuestaMinima;
+    - apuesta < apuestaMinima;
+

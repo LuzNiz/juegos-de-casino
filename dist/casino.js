@@ -126,6 +126,9 @@ class Casino {
         console.log(infoGames);
         this.selectGame();
     }
+    farewell() {
+        return "Apreciamos su participación en nuestro casino y esperamos recibir su visita nuevamente. ¡Gracias por jugar con nosotros!";
+    }
     //METODO PARA CORRER LA APLICACION
     app() {
         const age = readlineSync.questionInt('Por favor, ingrese su edad: '); //Pido al jugador su edad

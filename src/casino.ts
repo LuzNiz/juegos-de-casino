@@ -1,4 +1,6 @@
 import { Player } from './player';
+import { Blackjack } from './blackjack';
+import { Ruleta } from './ruleta';
 import * as readlineSync from 'readline-sync';
 import * as fs from 'fs';
 import clear from 'clear';
@@ -106,6 +108,10 @@ export class Casino {
         let infoGames: string = this.readFile('../files/infoJuegos.txt');
         console.log(infoGames);
         this.selectGame();
+    }
+
+    private farewell(): string{
+        return "Apreciamos su participación en nuestro casino y esperamos recibir su visita nuevamente. ¡Gracias por jugar con nosotros!"
     }
 
     //METODO PARA CORRER LA APLICACION
