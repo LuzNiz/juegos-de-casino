@@ -115,6 +115,7 @@ function mostrarMenuJuegos(player, option) {
     if (option === 0) {
         mostrarReglas(casino.getBlackJack());
         if (quiereSalir(player)) {
+            clearConsole();
             selectGame(player);
         }
         else {
@@ -126,6 +127,7 @@ function mostrarMenuJuegos(player, option) {
     else if (option === 1) {
         mostrarReglas(casino.getBlackJack());
         if (quiereSalir(player)) {
+            clearConsole();
             selectGame(player);
         }
         else {
@@ -143,9 +145,11 @@ function mostrarMenuJuegos(player, option) {
         if (opcion === 0) {
             mostrarReglas(casino.getTragamonedasEstandar());
             if (quiereSalir(player)) {
+                clearConsole();
                 selectGame(player);
             }
             else {
+                clearConsole();
                 casino.getTragamonedasEstandar().play(player);
                 mostrarMenuPrincipal(player);
             }
@@ -153,14 +157,17 @@ function mostrarMenuJuegos(player, option) {
         else if (opcion === 1) {
             mostrarReglas(casino.getTragamonedasProgresivo());
             if (quiereSalir(player)) {
+                clearConsole();
                 selectGame(player);
             }
             else {
+                clearConsole();
                 casino.getTragamonedasProgresivo().play(player);
                 selectGame(player);
             }
         }
         else if (opcion === 2) {
+            clearConsole();
             selectGame(player);
         }
         else {
@@ -169,7 +176,8 @@ function mostrarMenuJuegos(player, option) {
         }
     }
     else if (option === 3) {
-        selectGame(player);
+        clearConsole();
+        mostrarMenuPrincipal(player);
     }
     else {
         clearConsole();
@@ -232,6 +240,7 @@ function farewell() {
 }
 //METODO PARA CORRER LA APLICACION
 function main() {
+    clearConsole();
     const access = casino.provideAccess(); //Valido la edad ingresada
     if (access) { //Si cumple con la edad minima:
         let player = newPlayer(); //Instancio un nuevo jugador

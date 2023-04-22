@@ -90,6 +90,7 @@ function mostrarMenuJuegos(player: Player, option: number) {
         if (option === 0) {
             mostrarReglas(casino.getBlackJack());
             if(quiereSalir(player)){
+                clearConsole();
                 selectGame(player);
             }else{
                 casino.getBlackJack().play(player);
@@ -99,6 +100,7 @@ function mostrarMenuJuegos(player: Player, option: number) {
         } else if (option === 1) {
             mostrarReglas(casino.getBlackJack());
             if(quiereSalir(player)){
+                clearConsole();
                 selectGame(player);
             }else{
                 casino.getRuleta().play(player);
@@ -114,27 +116,33 @@ function mostrarMenuJuegos(player: Player, option: number) {
             if (opcion === 0) {
                 mostrarReglas(casino.getTragamonedasEstandar());
                 if(quiereSalir(player)){
+                    clearConsole();
                     selectGame(player);
                 }else{
+                    clearConsole();
                     casino.getTragamonedasEstandar().play(player);
                     mostrarMenuPrincipal(player);
                 }
             }else if(opcion === 1){
                 mostrarReglas(casino.getTragamonedasProgresivo());
                 if(quiereSalir(player)){
+                    clearConsole();
                     selectGame(player);
                 }else{
+                    clearConsole();
                     casino.getTragamonedasProgresivo().play(player)
                     selectGame(player);
                 }
             }else if(opcion === 2){
+                clearConsole();
                 selectGame(player)
             }else{
                 clearConsole();
                 mostrarMenuPrincipal(player);
             }
         }else if(option === 3){
-            selectGame(player);
+            clearConsole();
+            mostrarMenuPrincipal(player);
         }else{
             clearConsole();
             mostrarMenuPrincipal(player);
@@ -197,6 +205,7 @@ function farewell(): string{
 
 //METODO PARA CORRER LA APLICACION
 export function main(): void {
+    clearConsole();
     const access: boolean = casino.provideAccess(); //Valido la edad ingresada
     if (access) { //Si cumple con la edad minima:
         let player: Player = newPlayer(); //Instancio un nuevo jugador
