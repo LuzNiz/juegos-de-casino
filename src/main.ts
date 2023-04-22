@@ -80,9 +80,9 @@ function mostrarReglas( juego : Ruleta | Blackjack | TragamonedaEstandar | Traga
     }else if(juego instanceof Blackjack){
         console.log(readFile(urlInfoBlackjack));
     }else if(juego instanceof TragamonedaEstandar){
-        console.log(readFile(urlInfoTragamonedasProgresiva));
-    }else{
         console.log(readFile(urlInfoTragamonedasEstandar));
+    }else{
+        console.log(readFile(urlInfoTragamonedasProgresiva));
     }
 }
 
@@ -98,7 +98,7 @@ function mostrarMenuJuegos(player: Player, option: number) {
                 selectGame(player);
             }
         } else if (option === 1) {
-            mostrarReglas(casino.getBlackJack());
+            mostrarReglas(casino.getRuleta());
             if(quiereSalir(player)){
                 clearConsole();
                 selectGame(player);
@@ -121,7 +121,7 @@ function mostrarMenuJuegos(player: Player, option: number) {
                 }else{
                     clearConsole();
                     casino.getTragamonedasEstandar().play(player);
-                    mostrarMenuPrincipal(player);
+                    selectGame(player);
                 }
             }else if(opcion === 1){
                 mostrarReglas(casino.getTragamonedasProgresivo());

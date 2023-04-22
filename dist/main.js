@@ -105,10 +105,10 @@ function mostrarReglas(juego) {
         console.log(readFile(urlInfoBlackjack));
     }
     else if (juego instanceof tragamonedaEstandar_1.TragamonedaEstandar) {
-        console.log(readFile(urlInfoTragamonedasProgresiva));
+        console.log(readFile(urlInfoTragamonedasEstandar));
     }
     else {
-        console.log(readFile(urlInfoTragamonedasEstandar));
+        console.log(readFile(urlInfoTragamonedasProgresiva));
     }
 }
 function mostrarMenuJuegos(player, option) {
@@ -125,7 +125,7 @@ function mostrarMenuJuegos(player, option) {
         }
     }
     else if (option === 1) {
-        mostrarReglas(casino.getBlackJack());
+        mostrarReglas(casino.getRuleta());
         if (quiereSalir(player)) {
             clearConsole();
             selectGame(player);
@@ -151,7 +151,7 @@ function mostrarMenuJuegos(player, option) {
             else {
                 clearConsole();
                 casino.getTragamonedasEstandar().play(player);
-                mostrarMenuPrincipal(player);
+                selectGame(player);
             }
         }
         else if (opcion === 1) {
