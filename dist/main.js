@@ -26,6 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.main = exports.setMoney = exports.saldoInsuficiente = void 0;
 const casino_1 = require("./casino");
 const player_1 = require("./player");
 const blackjack_1 = require("./blackjack");
@@ -34,8 +35,8 @@ const readlineSync = __importStar(require("readline-sync"));
 const fs = __importStar(require("fs"));
 const clear_1 = __importDefault(require("clear"));
 const tragamonedaEstandar_1 = require("./tragamonedaEstandar");
+const color = __importStar(require("colorette"));
 const casino = new casino_1.Casino("Las vegas", 18); //LINEA QUE CREA EL CASINO
-main();
 const urlWelcome = "../files/welcome.txt";
 const urlInfoJuegos = "../files/infoJuegos.txt";
 const urlInfoRuleta = "../files/infoRuleta.txt";
@@ -60,10 +61,40 @@ function welcome(name) {
 }
 //METODO QUE INSTANCIA LOS JUEGOS DEPENDIENDO DE LA ELECCIÓN DEL JUGADOR
 function selectGame(player) {
-    console.log('Seleccione el juego que quiere jugar');
-    let games = ['BlackJack', 'Ruleta', 'Tragamonedas']; //Declaro en un array las opciones
+    console.log(color.red('Seleccione el juego que quiere jugar'));
+    let games = [color.blue('BlackJack'), color.red('Ruleta'), color.yellow('Tragamonedas'), color.magenta('Volver')]; //Declaro en un array las opciones
     let option = readlineSync.keyInSelect(games); //Le paso al modulo keyInSelect el array
-    mostrarMenu(player, option);
+    mostrarMenuJuegos(player, option);
+}
+function mostrarMenuPrincipal(player) {
+    let opciones = ['Jugar', 'Cobrar premios'];
+    let opcion = readlineSync.keyInSelect(opciones);
+    if (opcion === 0) {
+        clearConsole();
+        let infoGames = readFile(urlInfoJuegos);
+        console.log(infoGames);
+        selectGame(player);
+    }
+    else if (opcion === 1) {
+        clearConsole();
+        casino.cobrarPremio(player);
+        mostrarMenuPrincipal(player);
+    }
+    else if (opcion === -1) {
+        clearConsole();
+        console.log(farewell());
+    }
+}
+function quiereSalir(player) {
+    let salir = false;
+    let opciones = readlineSync.keyInSelect([color.green('Jugar'), color.red('Salir')]);
+    if (opciones === 1) {
+        salir = true;
+    }
+    else if (opciones !== 0) {
+        selectGame(player);
+    }
+    return salir;
 }
 function mostrarReglas(juego) {
     clearConsole();
@@ -80,42 +111,87 @@ function mostrarReglas(juego) {
         console.log(readFile(urlInfoTragamonedasEstandar));
     }
 }
-function mostrarMenu(player, option) {
+function mostrarMenuJuegos(player, option) {
     if (option === 0) {
         mostrarReglas(casino.getBlackJack());
-        casino.getBlackJack().play(player);
-        clearConsole();
-        selectGame(player);
+        if (quiereSalir(player)) {
+            selectGame(player);
+        }
+        else {
+            casino.getBlackJack().play(player);
+            clearConsole();
+            selectGame(player);
+        }
     }
     else if (option === 1) {
         mostrarReglas(casino.getBlackJack());
-        casino.getRuleta().play(player);
-        clearConsole();
-        selectGame(player);
+        if (quiereSalir(player)) {
+            selectGame(player);
+        }
+        else {
+            casino.getRuleta().play(player);
+            clearConsole();
+            selectGame(player);
+        }
     }
     else if (option === 2) {
         clearConsole();
+        console.log(readFile(urlInfoTragamonedas));
         console.log('Selecciono Tragamonedas. Por favor seleccione el tipo de tragamonedas con el que quiere jugar');
-        let type = ['Tragamonedas Estandar', 'Tragamonedas Progresivo'];
-        let typeSlots = readlineSync.keyInSelect(type);
-        if (typeSlots === 0) {
+        let opciones = [color.blue('Tragamonedas Estandar'), color.red('Tragamonedas Progresivo'), color.green('Volver')];
+        let opcion = readlineSync.keyInSelect(opciones);
+        if (opcion === 0) {
             mostrarReglas(casino.getTragamonedasEstandar());
-            casino.getTragamonedasEstandar().play(player);
-            selectGame(player);
+            if (quiereSalir(player)) {
+                selectGame(player);
+            }
+            else {
+                casino.getTragamonedasEstandar().play(player);
+                mostrarMenuPrincipal(player);
+            }
         }
-        else if (typeSlots === 1) {
+        else if (opcion === 1) {
             mostrarReglas(casino.getTragamonedasProgresivo());
-            casino.getTragamonedasProgresivo().play(player);
+            if (quiereSalir(player)) {
+                selectGame(player);
+            }
+            else {
+                casino.getTragamonedasProgresivo().play(player);
+                selectGame(player);
+            }
+        }
+        else if (opcion === 2) {
             selectGame(player);
         }
+        else {
+            clearConsole();
+            mostrarMenuPrincipal(player);
+        }
+    }
+    else if (option === 3) {
+        selectGame(player);
+    }
+    else {
+        clearConsole();
+        mostrarMenuPrincipal(player);
     }
 }
 //METODO QUE PERMITE SELECCIONAR EL JUEGO
+function saldoInsuficiente(player) {
+    let respuesta = readlineSync.keyInYNStrict('¿Desea ingresar mas dinero?');
+    if (respuesta) {
+        setMoney(player);
+    }
+    else {
+        mostrarMenuPrincipal(player);
+    }
+}
+exports.saldoInsuficiente = saldoInsuficiente;
 //METODO PARA INGRESAR DINERO
 function setMoney(player) {
     let validate = false;
     while (validate == false) {
-        let money = readlineSync.questionInt('Ingrese el monto de dinero con el que desea jugar: ');
+        let money = readlineSync.questionInt('Ingrese el monto de dinero: ');
         if (money !== 0 && money > 0 && money < 1000000) {
             player.setAvailableMoney(money);
             clearConsole();
@@ -123,10 +199,11 @@ function setMoney(player) {
             validate = true;
         }
         else {
-            console.log('Ingrese un monto mayor a $0 y menor a $1.000.000');
+            console.log(color.red('Ingrese un monto mayor a $0 y menor a $1.000.000'));
         }
     }
 }
+exports.setMoney = setMoney;
 //METODO QUE PREGUNTA EL NOMBRE
 function askName() {
     let isValido = false;
@@ -138,7 +215,7 @@ function askName() {
             isValido = true;
         }
         else {
-            console.log('El nombre no puede contener números ni caracteres especiales');
+            console.log(color.red('El nombre no puede contener números ni caracteres especiales'));
         }
     }
     return firstName;
@@ -149,12 +226,6 @@ function newPlayer() {
     let player = new player_1.Player(firstName);
     return player;
 }
-//METODO QUE PERMITE A JUGAR AL USUARIO
-function play(player) {
-    let infoGames = readFile(urlInfoJuegos);
-    console.log(infoGames);
-    selectGame(player);
-}
 //METODO QUE DESPIDE AL JUGADOR
 function farewell() {
     return "Apreciamos su participación en nuestro casino y esperamos recibir su visita nuevamente. ¡Gracias por jugar con nosotros!";
@@ -164,11 +235,12 @@ function main() {
     const access = casino.provideAccess(); //Valido la edad ingresada
     if (access) { //Si cumple con la edad minima:
         let player = newPlayer(); //Instancio un nuevo jugador
-        casino.welcome(player.getFirstName()); //Le doy la bienvenida
+        welcome(player.getFirstName()); //Le doy la bienvenida
         setMoney(player);
-        play(player); //Corro la función para que el jugador juege
+        mostrarMenuPrincipal(player); //Corro la función para que el jugador juege
     }
     else {
-        console.log(`Lamentablemente, debido a las restricciones de edad, no es posible que juegues en nuestro casino si eres menor de ${casino.getMinimumAgeAllowed()} años.`);
+        console.log(color.red(`Lamentablemente, debido a las restricciones de edad, no es posible que juegues en nuestro casino si eres menor de ${casino.getMinimumAgeAllowed()} años.`));
     }
 }
+exports.main = main;

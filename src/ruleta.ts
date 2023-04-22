@@ -1,57 +1,143 @@
-import * as readline from 'readline-sync';
+import * as readlineSync from 'readline-sync';
+import { Game } from './game';
+import { Player } from './player';
+import clear from 'clear';
+import * as color from "colorette";
 
 
-export class Ruleta {
-  private num: number[];
+export class Ruleta extends Game {
   private color: string[];
+  private colorApostado: string;
+  private numeroApostado: number;
+  private numeroGanador: number;
+  private colorGanador: string;
+  private modalidadElegida: string;
 
-  constructor() {
-    this.num = []//1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-    this.color = []
-
+  constructor(name: string, apuestaMinima: number) {
+    super(name, apuestaMinima)
+    this.color = [color.red('Rojo'),color.green('Verde'), color.gray('Negro')]
+    this.colorApostado = '';
+    this.numeroApostado = 0;
+    this.numeroGanador = 0;
+    this.colorGanador= '';
+    this.modalidadElegida = '';
   }
 
-  public play(): void {
 
-    console.log('¡Bienvenido/a al juego de Ruleta!');
-    const bet = readline.question('Por favor, realice su apuesta (Numero o color): ');
-    const money = parseInt(readline.question('Por favor, escriba el monto que desea apostar:  '));
-
-    for (let i = 0; i < 10; i++) {// inicializo, mientras se cumpl la condicion ++ 
-      this.num.push(i); //empuja el numero
-      if ((i >= 1 && i <= 5)) {
-        this.color.push('Rojo');
-      } else {
-        this.color.push('Negro');
-      }
-    }
-
-    if (this.num.concat(parseInt(bet))) { //parseInt: devuelve el entero
-      const numWin = this.spin();
-      if (parseInt(bet) === numWin) {
-        console.log(`Has ganado $${money * 10}. Felicidades!`);
-      } else {
-        console.log(`El número ganador es ${numWin}. Has perdido tu apuesta $${money}.`);
-      }
-    } else if (this.color.concat(bet.toLowerCase())) {
-      const winColor = this.color[this.spin()];
-      if (bet.toLowerCase() === winColor) {
-        console.log(`Has ganado $${money}!Felicidades`);
-      } else {
-        console.log(`El color ganador es ${winColor}. Has perdido $${money}.`);
-      }
-    } else {
-      console.log('Apuesta invalida.');
+private setNumeroApostado(): void{
+  let numeroCorrecto = false;
+  let numero: number = 0;
+  while(numeroCorrecto == false){
+    numero = readlineSync.questionInt('Ingrese numero al que desea apostar: '); 
+    if(numero >= 0 && numero <= 36){
+      this.numeroApostado = numero;
+      numeroCorrecto = true;
+    }else {
+      console.log(color.red('Por favor ingrese un número entre 0 y 36'));
     }
   }
-
-  private spin(): number {
-    console.log('Girando la ruleta. Aguarde un momento...');
-    const winNum = Math.floor(Math.random() * 10);
-    console.log(`Ha salido ${winNum} (${this.color[winNum]}).`);
-    return winNum;
-  }
-
+  
 }
-const ruleta1 = new Ruleta();
-ruleta1.play();
+
+private setColorApostado(): void {
+  let colorIndex: number = readlineSync.keyInSelect(this.color);
+  this.colorApostado = this.color[colorIndex];
+}
+//CALCULA EL COLOR GANADOR
+  private calcularColorGanador(): string{
+    const numero = Math.floor(Math.random()*3);
+    const colorWin = this.color[numero];
+    return colorWin;
+  }
+//CALCULA EL NUMERO GANADOR
+  private calcularNumeroGanador(): number{
+    const numero = Math.floor(Math.random()*36);
+    return numero;
+  }
+//GIRA LA RULETA Y ASIGNA RESULTADOS
+  private girarRuleta(): void {
+    console.log(color.green('Girando Ruelta...'));
+    this.numeroGanador = this.calcularNumeroGanador();
+    this.colorGanador = this.calcularColorGanador();
+    console.log(`Ha salido el ${this.numeroGanador} ${this.colorGanador}`);
+  }
+
+  public isWin(): number{
+    let resultado = '';
+    if(this.modalidadElegida === 'Color'){
+      if(this.colorGanador === this.colorApostado){
+        resultado = 'Win';
+        console.log(color.green(`Ud. ha ganado!. Se suman a su poso + ${this.montoApostado}`))
+      }else if(this.colorGanador !== this.colorApostado && this.colorGanador === 'Verde'){
+        console.log(color.bgBlue(`Usted no ganó ni perdió.`));
+      }else{
+        resultado = 'Lose';
+        console.log(color.red('Usted perdió'));
+      }
+    }else if(this.modalidadElegida === 'Numero'){
+      if(this.numeroGanador === this.numeroApostado){
+        resultado = 'Win';
+        console.log(color.green('Ha ganado'))
+      }else if(this.numeroGanador !== this.numeroApostado && this.numeroGanador === 0){
+        console.log(color.blue('Usted no ganó ni perdió'))
+      }else{
+        resultado = 'Lose';
+        console.log(color.red('Usted perdió'));
+      }
+    }else{
+      if(this.numeroGanador === this.numeroApostado && this.colorGanador === this.colorApostado){
+        resultado = 'Win';
+        console.log(color.green('Ha ganado'))
+      }else if(this.numeroGanador === this.numeroApostado || this.colorGanador === this.colorApostado){
+        resultado = 'noWinNoLost';
+        console.log(color.blue('Usted no ganó ni perdió'))
+      }else{
+        resultado = 'Lose';
+        console.log(color.red('Usted perdió'));
+      }
+    }
+    return this.sumarDescontarPremio(resultado, this.montoApostado);
+  }
+
+
+  private selectType(){
+    console.log('Seleccione la modalidad en la que quiere apostar');
+    const opciones: string[] = ['Color', 'Numero', 'Ambas'];
+    let option: number = readlineSync.keyInSelect(opciones);
+    this.modalidadElegida = opciones[option];
+    switch(option){
+      case 0:
+        this.setColorApostado();
+        break;
+      case 1:
+        this.setNumeroApostado();
+        break;
+      default:
+        this.setColorApostado()
+        this.setNumeroApostado();
+        break;
+    }
+    this.girarRuleta();
+  }
+
+  public app(): number {
+    this.selectType();
+    this.isWin();
+    return this.montoGanado;
+  }
+
+  public play(player :Player): void {
+    let jugar = true;
+      while(jugar) {
+        this.setMontoApostado(player);
+        let montoGanado = this.app();
+        player.setAvailableMoney(montoGanado);
+        console.log(`Su saldo actual es de ${player.getvailableMoney()}`)
+        const respuesta = readlineSync.keyInYNStrict('Desea seguir jugando? ');
+        if(respuesta == false){
+          jugar = false;
+        }
+        clear();
+      }
+  }
+}

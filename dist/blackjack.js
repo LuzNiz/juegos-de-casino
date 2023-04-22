@@ -24,34 +24,42 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Blackjack = void 0;
-const readline = __importStar(require("readline-sync"));
-class Blackjack {
-    constructor() {
+const readlineSync = __importStar(require("readline-sync"));
+const game_1 = require("./game");
+const color = __importStar(require("colorette"));
+class Blackjack extends game_1.Game {
+    constructor(name, apuestaMinima) {
+        super(name, apuestaMinima);
         this.mazo = [];
-        this.jugadorMano = [];
-        this.dealerMano = [];
-        this.palos = ["Corazones", "Diamantes", "Tréboles", "Picas"];
-        this.valores = ['As', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        this.manoJugador = [];
+        this.manoDealer = [];
+        this.palos = ["Corazones", "Diamantes", "Tréboles", "Picas"]; //
+        this.valores = ['As', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']; //
     }
     crearMazo() {
         for (let valor = 0; valor < this.valores.length; valor++) {
             for (let palo = 0; palo < this.palos.length; palo++) {
-                this.mazo.push({ valor: valor, palo: this.palos[palo], texto: `${this.valores[valor]} de ${this.palos[palo]}` });
+                this.mazo.push({
+                    valor: valor,
+                    palo: this.palos[palo],
+                    texto: `${this.valores[valor]} de ${this.palos[palo]}`
+                });
             }
         }
     }
     mezclarMazo() {
         for (let i = this.mazo.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
+            let j = Math.floor(Math.random() * (i + 1));
             [this.mazo[i], this.mazo[j]] = [this.mazo[j], this.mazo[i]];
         }
     }
     repartirCarta(mano) {
-        mano.push(this.mazo.pop()); //.pop elimina el ultimo elemento de un array y lo devuelve-/.push añade un elemento al final del array
+        mano.push(this.mazo.pop());
     }
     mostrarMano(mano) {
         return mano.map(carta => carta.texto).join(', '); // .MAP utilizada para transformar cada objeto carta en una cadena de texto.
-    } // .JOIN une todas las cadenas de texto con una , y un espacio entre cada una.
+    }
+    // .JOIN une todas las cadenas de texto con una , y un espacio entre cada una.
     sumarMano(mano) {
         let total = 0; // inicializo las dos variables
         let ases = 0;
@@ -76,60 +84,108 @@ class Blackjack {
         }
         return total;
     }
-    jugar() {
-        console.log('¡Bienvenido/a al juego de Blackjack!');
-        while (true) {
-            this.crearMazo();
-            this.mezclarMazo();
-            this.jugadorMano = [];
-            this.dealerMano = [];
-            this.repartirCarta(this.jugadorMano);
-            this.repartirCarta(this.dealerMano);
-            this.repartirCarta(this.jugadorMano);
-            this.repartirCarta(this.dealerMano);
-            console.log(`El dealer muestra ${this.dealerMano[1].texto}`); // deale muestra el 6 mas el texto = palos
-            while (true) {
-                console.log(`Tu mano: ${this.mostrarMano(this.jugadorMano)}`);
-                let totalJugador = this.sumarMano(this.jugadorMano);
-                console.log(`Total: ${totalJugador}`);
-                if (totalJugador > 21) {
-                    console.log('Te pasaste de 21. Has perdido.');
-                    break;
-                }
-                let respuesta = readline.question('Queres otra carta?: ');
-                if (respuesta === 'si') {
-                    this.repartirCarta(this.jugadorMano);
-                }
-                else {
-                    console.log('¡Gracias por jugar!');
-                    break;
-                }
+    asignarCartas() {
+        this.crearMazo();
+        this.mezclarMazo();
+        for (let i = 0; i < 2; i++) {
+            this.repartirCarta(this.manoJugador);
+            this.repartirCarta(this.manoDealer);
+        }
+        console.log(color.red(`
+    ---------------------------------------------
+    El dealer muestra ${this.manoDealer[0].texto}
+    --------------------------------------------
+    `)); // [1]deale muestra el 6 mas el texto = palos
+        console.log(color.green(`
+    ----------------------------------------------
+    Tu mano: ${this.mostrarMano(this.manoJugador)}
+    ----------------------------------------------
+    `));
+        let totalJugador = this.sumarMano(this.manoJugador);
+        console.log(color.magenta(`
+    -------------
+    |Total:         |
+    |${totalJugador}|
+    -------------
+    `));
+        let respuesta = readlineSync.keyInYNStrict('¿Quiere 1 carta mas?: ');
+        if (respuesta) {
+            this.repartirCarta(this.manoJugador);
+            console.log(color.red(`
+      ---------------------------------------------
+      El dealer muestra ${this.manoDealer[0].texto}
+      --------------------------------------------
+      `));
+        }
+        else {
+            console.log('¡Gracias por jugar!');
+        }
+        totalJugador = this.sumarMano(this.manoJugador);
+        return totalJugador;
+    }
+    isWin() {
+        let totalJugador = this.asignarCartas();
+        let totalDealer = this.sumarMano(this.manoDealer);
+        let resultado = 'Lose';
+        let dinero = this.montoApostado;
+        console.log(`Tu mano: ${this.mostrarMano(this.manoJugador)}`);
+        console.log(`Total: ${totalJugador}`);
+        if (totalJugador === 21) {
+            resultado = 'Win';
+            console.log(`Usted gana. Se suma a su pozo +${dinero}`);
+        }
+        else if (totalJugador >= 0 && totalJugador < 21) {
+            this.repartirCarta(this.manoDealer);
+            console.log(`Mano del dealer: ${this.mostrarMano(this.manoDealer)}`);
+            totalDealer = this.sumarMano(this.manoDealer);
+            console.log(color.magentaBright(`
+      -------------
+      |Total Dealer:  |
+      |${totalDealer}|
+      -------------
+      `));
+            if (totalDealer === 21) {
+                resultado = 'Lose';
+                console.log(color.red('El casino ha sacado 21. Ud. pierde'));
             }
-            let totalJugador = this.sumarMano(this.jugadorMano);
-            if (totalJugador <= 21) {
-                console.log('Tu mano: ${ this.mostrarMano(this.jugadorMano) }');
-                console.log('Total: ${ totalJugador }');
-                while (this.sumarMano(this.dealerMano) < 17) {
-                    this.repartirCarta(this.dealerMano);
-                }
-                console.log('Mano del dealer: ${ this.mostrarMano(this.dealerMano)}');
-                let totalDealer = this.sumarMano(this.dealerMano);
-                console.log('Total del dealer: ${ totalDealer }');
-                if (totalDealer > 21) {
-                    console.log('El dealer se pasó de 21. Has ganado!');
-                }
-                else {
-                    console.log('El dealer gana. Has perdido.');
-                }
+            else if (totalDealer > 21) {
+                resultado = 'Win';
+                console.log(color.green('Ha ganado. El casino ha sacado más de 21'));
             }
-            let respuesta = readline.question('Queres jugar nuevamente? (si/no):');
-            if (respuesta !== 'si') {
+            else if (totalDealer > totalJugador) {
+                resultado = 'Lose';
+                console.log(color.red('El casino ha sacado una mano mayor. Ud. pierde'));
+            }
+            else if (totalDealer === totalJugador) {
+                resultado = 'noWinNoLose';
+                console.log(color.blue('Saco lo mismo que el casino. No gana ni pierde'));
+            }
+            else {
+                resultado = 'Win';
+                console.log(color.green('Ha ganado. Ud. ha sacado una mano mayor que el casino'));
+            }
+        }
+        else {
+            resultado = 'Lose';
+            console.log(color.red('Ha perdido. Ha sacado más que 21'));
+        }
+        this.manoJugador = [];
+        this.manoDealer = [];
+        return this.sumarDescontarPremio(resultado, dinero);
+    }
+    play(player) {
+        let jugar = true;
+        while (jugar) {
+            this.setMontoApostado(player);
+            let montoGanado = this.isWin();
+            player.setAvailableMoney(montoGanado);
+            console.log(`Su saldo actual es de ${player.getvailableMoney()}`);
+            let respuesta = readlineSync.keyInYNStrict('Queres jugar nuevamente?:');
+            if (respuesta == false) {
                 console.log('¡Gracias por jugar!');
-                break;
+                jugar = false;
             }
         }
     }
 }
 exports.Blackjack = Blackjack;
-const juego = new Blackjack();
-juego.jugar();

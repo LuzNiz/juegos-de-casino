@@ -1,0 +1,17 @@
+------------------------------------------------------------------------------------------------------------
+                                           R U L E T A
+------------------------------------------------------------------------------------------------------------
+MODALIDADES DE JUEGO:
+En primer lugar, deberá seleccionar el monto de la apuesta que deseas realizar. Luego, tendrá que elegir 
+si deseas apostar al color, al número o a ambas modalidades.
+
+PREMIOS DEL JUEGO:
+Si el jugador decide apostar en ambas modalidades:
+    Si acierta únicamente el color o el número, no ganará ni perderá.
+    En cambio, si acierta en ambas modalidades, ganará el monto apostado.
+    Si no acierta en ninguna de las dos modalidades, perderá el monto apostado.
+Si el jugador decide apostar en una sola modalidad (color o número):
+    Si acierta, ganará el monto apostado.
+    Si no acierta, perderá el monto apostado.
+    Si sale el color verde o el número 0, el jugador no ganará ni perderá.
+-------------------------------------------------------------------------------------------------------------
