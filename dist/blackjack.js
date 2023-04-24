@@ -25,9 +25,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Blackjack = void 0;
 const readlineSync = __importStar(require("readline-sync"));
-const game_1 = require("./game");
+const juego_1 = require("./juego");
 const color = __importStar(require("colorette"));
-class Blackjack extends game_1.Game {
+class Blackjack extends juego_1.Juego {
     constructor(name, apuestaMinima) {
         super(name, apuestaMinima);
         this.mazo = [];
@@ -123,7 +123,7 @@ class Blackjack extends game_1.Game {
         totalJugador = this.sumarMano(this.manoJugador);
         return totalJugador;
     }
-    isWin() {
+    esGanador() {
         let totalJugador = this.asignarCartas();
         let totalDealer = this.sumarMano(this.manoDealer);
         let resultado = 'Lose';
@@ -131,7 +131,7 @@ class Blackjack extends game_1.Game {
         console.log(`Tu mano: ${this.mostrarMano(this.manoJugador)}`);
         console.log(`Total: ${totalJugador}`);
         if (totalJugador === 21) {
-            resultado = 'Win';
+            resultado = 'Gano';
             console.log(`Usted gana. Se suma a su pozo +${dinero}`);
         }
         else if (totalJugador >= 0 && totalJugador < 21) {
@@ -145,41 +145,41 @@ class Blackjack extends game_1.Game {
       -------------
       `));
             if (totalDealer === 21) {
-                resultado = 'Lose';
+                resultado = 'Perdio';
                 console.log(color.red('El casino ha sacado 21. Ud. pierde'));
             }
             else if (totalDealer > 21) {
-                resultado = 'Win';
+                resultado = 'Gano';
                 console.log(color.green('Ha ganado. El casino ha sacado más de 21'));
             }
             else if (totalDealer > totalJugador) {
-                resultado = 'Lose';
+                resultado = 'Perdio';
                 console.log(color.red('El casino ha sacado una mano mayor. Ud. pierde'));
             }
             else if (totalDealer === totalJugador) {
-                resultado = 'noWinNoLose';
+                resultado = 'noGanoNoPerdio';
                 console.log(color.blue('Saco lo mismo que el casino. No gana ni pierde'));
             }
             else {
-                resultado = 'Win';
+                resultado = 'Gano';
                 console.log(color.green('Ha ganado. Ud. ha sacado una mano mayor que el casino'));
             }
         }
         else {
-            resultado = 'Lose';
+            resultado = 'Perdio';
             console.log(color.red('Ha perdido. Ha sacado más que 21'));
         }
         this.manoJugador = [];
         this.manoDealer = [];
         return this.sumarDescontarPremio(resultado, dinero);
     }
-    play(player) {
+    jugar(jugador) {
         let jugar = true;
         while (jugar) {
-            this.setMontoApostado(player);
-            let montoGanado = this.isWin();
-            player.setAvailableMoney(montoGanado);
-            console.log(`Su saldo actual es de ${player.getvailableMoney()}`);
+            this.setMontoApostado(jugador);
+            let montoGanado = this.esGanador();
+            jugador.setDineroDisponible(montoGanado);
+            console.log(`Su saldo actual es de ${jugador.getDineroDisponible()}`);
             let respuesta = readlineSync.keyInYNStrict('Queres jugar nuevamente?:');
             if (respuesta == false) {
                 console.log('¡Gracias por jugar!');

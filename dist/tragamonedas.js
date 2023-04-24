@@ -24,11 +24,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tragamonedas = void 0;
-const game_1 = require("./game");
+const juego_1 = require("./juego");
 const color = __importStar(require("colorette"));
-class Tragamonedas extends game_1.Game {
-    constructor(name, apuestaMinima) {
-        super(name, apuestaMinima);
+class Tragamonedas extends juego_1.Juego {
+    constructor(nombre, apuestaMinima) {
+        super(nombre, apuestaMinima);
         this.numeros = [];
     }
     girar() {

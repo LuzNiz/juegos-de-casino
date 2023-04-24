@@ -28,12 +28,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ruleta = void 0;
 const readlineSync = __importStar(require("readline-sync"));
-const game_1 = require("./game");
+const juego_1 = require("./juego");
 const clear_1 = __importDefault(require("clear"));
 const color = __importStar(require("colorette"));
-class Ruleta extends game_1.Game {
-    constructor(name, apuestaMinima) {
-        super(name, apuestaMinima);
+class Ruleta extends juego_1.Juego {
+    constructor(nombre, apuestaMinima) {
+        super(nombre, apuestaMinima);
         this.color = [color.red('Rojo'), color.green('Verde'), color.gray('Negro')];
         this.colorApostado = '';
         this.numeroApostado = 0;
@@ -62,8 +62,8 @@ class Ruleta extends game_1.Game {
     //CALCULA EL COLOR GANADOR
     calcularColorGanador() {
         const numero = Math.floor(Math.random() * 3);
-        const colorWin = this.color[numero];
-        return colorWin;
+        const colorGanador = this.color[numero];
+        return colorGanador;
     }
     //CALCULA EL NUMERO GANADOR
     calcularNumeroGanador() {
@@ -77,56 +77,56 @@ class Ruleta extends game_1.Game {
         this.colorGanador = this.calcularColorGanador();
         console.log(`Ha salido el ${this.numeroGanador} ${this.colorGanador}`);
     }
-    isWin() {
+    esGanador() {
         let resultado = '';
         if (this.modalidadElegida === 'Color') {
             if (this.colorGanador === this.colorApostado) {
-                resultado = 'Win';
+                resultado = 'Gano';
                 console.log(color.green(`Ud. ha ganado!. Se suman a su poso + ${this.montoApostado}`));
             }
             else if (this.colorGanador !== this.colorApostado && this.colorGanador === 'Verde') {
                 console.log(color.bgBlue(`Usted no ganó ni perdió.`));
             }
             else {
-                resultado = 'Lose';
+                resultado = 'Perdio';
                 console.log(color.red('Usted perdió'));
             }
         }
         else if (this.modalidadElegida === 'Numero') {
             if (this.numeroGanador === this.numeroApostado) {
-                resultado = 'Win';
+                resultado = 'Gano';
                 console.log(color.green('Ha ganado'));
             }
             else if (this.numeroGanador !== this.numeroApostado && this.numeroGanador === 0) {
                 console.log(color.blue('Usted no ganó ni perdió'));
             }
             else {
-                resultado = 'Lose';
+                resultado = 'Perdio';
                 console.log(color.red('Usted perdió'));
             }
         }
         else {
             if (this.numeroGanador === this.numeroApostado && this.colorGanador === this.colorApostado) {
-                resultado = 'Win';
+                resultado = 'Gano';
                 console.log(color.green('Ha ganado'));
             }
             else if (this.numeroGanador === this.numeroApostado || this.colorGanador === this.colorApostado) {
-                resultado = 'noWinNoLost';
+                resultado = 'noGanoNoPerdio';
                 console.log(color.blue('Usted no ganó ni perdió'));
             }
             else {
-                resultado = 'Lose';
+                resultado = 'Perdio';
                 console.log(color.red('Usted perdió'));
             }
         }
         return this.sumarDescontarPremio(resultado, this.montoApostado);
     }
-    selectType() {
+    mostrarMenuApuesta() {
         console.log('Seleccione la modalidad en la que quiere apostar');
         const opciones = ['Color', 'Numero', 'Ambas'];
-        let option = readlineSync.keyInSelect(opciones);
-        this.modalidadElegida = opciones[option];
-        switch (option) {
+        let opcionElegida = readlineSync.keyInSelect(opciones);
+        this.modalidadElegida = opciones[opcionElegida];
+        switch (opcionElegida) {
             case 0:
                 this.setColorApostado();
                 break;
@@ -140,18 +140,18 @@ class Ruleta extends game_1.Game {
         }
         this.girarRuleta();
     }
-    app() {
-        this.selectType();
-        this.isWin();
+    ejecutar() {
+        this.mostrarMenuApuesta();
+        this.esGanador();
         return this.montoGanado;
     }
-    play(player) {
+    jugar(jugador) {
         let jugar = true;
         while (jugar) {
-            this.setMontoApostado(player);
-            let montoGanado = this.app();
-            player.setAvailableMoney(montoGanado);
-            console.log(`Su saldo actual es de ${player.getvailableMoney()}`);
+            this.setMontoApostado(jugador);
+            let montoGanado = this.ejecutar();
+            jugador.setDineroDisponible(montoGanado);
+            console.log(`Su saldo actual es de ${jugador.getDineroDisponible()}`);
             const respuesta = readlineSync.keyInYNStrict('Desea seguir jugando? ');
             if (respuesta == false) {
                 jugar = false;

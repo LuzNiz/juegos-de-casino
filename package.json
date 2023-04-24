@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsc --watch",
-    "casino": "cd dist && node program.js"
+    "casino": "cd dist && node programa.js"
   },
   "repository": {
     "type": "git",

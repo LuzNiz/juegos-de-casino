@@ -23,27 +23,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Game = void 0;
+exports.Juego = void 0;
 const main_1 = require("./main");
 const color = __importStar(require("colorette"));
-class Game {
-    constructor(name, apuestaMinima) {
-        this.name = name;
+class Juego {
+    constructor(nombreJuego, apuestaMinima) {
+        this.nombreJuego = nombreJuego;
         this.apuestaMinima = apuestaMinima;
         this.montoGanado = 0;
         this.montoApostado = 0;
     }
-    getName() { return this.name; }
+    //GETTERS AND SETTERS
+    getNombreJuego() { return this.nombreJuego; }
     getApuestaMinima() { return this.apuestaMinima; }
     ;
     getMontoGanado() { return this.montoGanado; }
     ;
     //GUARDA EL MONTO DE LA APUESTA
-    setMontoApostado(player) {
+    setMontoApostado(jugador) {
         let apuestaValida = false;
         while (apuestaValida == false) {
-            let apuesta = player.apostar();
-            if (this.validarMontoApostado(apuesta, player)) {
+            let apuesta = jugador.apostar();
+            if (this.validarMontoApostado(apuesta, jugador)) {
                 this.montoApostado = apuesta;
                 apuestaValida = true;
             }
@@ -52,9 +53,10 @@ class Game {
             }
         }
     }
-    validarMontoApostado(montoApostado, player) {
+    //VALIDA EL MONTO APOSTADO
+    validarMontoApostado(montoApostado, jugador) {
         let esValido = false;
-        let dineroDisponible = player.getvailableMoney();
+        let dineroDisponible = jugador.getDineroDisponible();
         if (montoApostado > 0 && montoApostado <= dineroDisponible && montoApostado >= this.apuestaMinima) {
             esValido = true;
         }
@@ -63,32 +65,35 @@ class Game {
         }
         else if (montoApostado > dineroDisponible) {
             console.log(color.red(`No tiene suficiente dinero disponible. El dinero disponible es $ ${dineroDisponible}`));
-            (0, main_1.saldoInsuficiente)(player);
+            (0, main_1.saldoInsuficiente)(jugador);
         }
         else {
             console.log(color.red('El monto apostado no puede ser $0 ni negativo'));
         }
         return esValido;
     }
+    //SUMA O DESCUENTA EL PREMIO SEGÚN EL RESULTADO DEL JUEGO
     sumarDescontarPremio(resultado, dinero) {
         this.montoGanado = 0;
-        if (resultado === 'Win') {
+        if (resultado === 'Gano') {
             this.montoGanado += dinero;
             this.montoApostado = 0;
         }
-        else if (resultado === 'Lose') {
+        else if (resultado === 'Perdio') {
             this.montoGanado -= this.montoApostado;
             this.montoApostado = 0;
         }
-        else if (resultado === 'noWinNoLose') {
+        else if (resultado === 'noGanoNoPerdio') {
             this.montoApostado = 0;
         }
         return this.montoGanado;
     }
-    play(player) {
+    //IMPLEMENTA METODO JUGAR() DE LA INTERFAZ QUE SERA MODIFICADO POR LAS CLASES HIJAS
+    jugar(jugador) {
     }
-    isWin() {
+    //IMPLEMENTA METODO ESGANADOR() DE LA INTERFAZ QUE SERA MODIFICADO POR LAS CLASES HIJAS
+    esGanador() {
         return 0;
     }
 }
-exports.Game = Game;
+exports.Juego = Juego;

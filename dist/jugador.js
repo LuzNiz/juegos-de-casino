@@ -23,38 +23,33 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Player = void 0;
+exports.Jugador = void 0;
 const readlineSync = __importStar(require("readline-sync"));
 const color = __importStar(require("colorette"));
-class Player {
-    constructor(firstName) {
-        this.firstName = firstName;
-        this.availableMoney = 0;
+class Jugador {
+    constructor(nombre) {
+        this.nombre = nombre;
+        this.dineroDisponible = 0;
     }
     //GETTERS AND SETTERS
-    getFirstName() { return this.firstName; }
+    getNombre() { return this.nombre; }
     ;
-    setFirstName(firstName) { this.firstName = firstName; }
+    setNombre(nombre) { this.nombre = nombre; }
     ;
-    getvailableMoney() { return this.availableMoney; }
+    getDineroDisponible() { return this.dineroDisponible; }
     ;
-    setAvailableMoney(money) {
-        if (money == 0) {
-            this.availableMoney = 0;
-        }
-        else {
-            this.availableMoney += money;
-        }
+    setDineroDisponible(dinero) {
+        this.dineroDisponible += dinero;
     }
     ;
-    //METODO QUE RETORNA AL JUGADOR
-    showData() { return this; }
-    ; //¿Necesario?
+    reiniciarDineroDisponible() {
+        this.dineroDisponible = 0;
+    }
     //METODO QUE MUESTRA EL SALDO DEL JUGADOR
-    checkBalance() {
+    mostrarSaldo() {
         console.log(color.green(`
         ------------------------------------------------------
-        Su saldo actual es de: $ ${this.availableMoney}
+        Su saldo actual es de: $ ${this.dineroDisponible}
         ------------------------------------------------------
         `));
     }
@@ -64,4 +59,4 @@ class Player {
         return valorApuesta;
     }
 }
-exports.Player = Player;
+exports.Jugador = Jugador;

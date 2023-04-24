@@ -1,74 +1,77 @@
-import { iPlay } from "./iPlay";
-import { Player } from "./player";
+import { iJugar } from "./iJugar";
+import { Jugador } from "./jugador";
 import { saldoInsuficiente } from "./main";
 import * as color from "colorette";
 
-export abstract class Game implements iPlay{
-    private name: string;
+export abstract class Juego implements iJugar{
+    private nombreJuego: string;
     private apuestaMinima: number;
     protected montoApostado: number;
     protected montoGanado: number
 
-    public constructor(name: string, apuestaMinima: number){
-        this.name = name;
+    public constructor(nombreJuego: string, apuestaMinima: number){
+        this.nombreJuego = nombreJuego;
         this.apuestaMinima = apuestaMinima;
         this.montoGanado = 0;
         this.montoApostado = 0;
     }
-
-    public getName(): string {return this.name}
+    //GETTERS AND SETTERS
+    public getNombreJuego(): string {return this.nombreJuego}
     public getApuestaMinima(): number{return this.apuestaMinima};
     public getMontoGanado():number  {return this.montoGanado};
 
-      //GUARDA EL MONTO DE LA APUESTA
-    public setMontoApostado(player: Player) {
+    //GUARDA EL MONTO DE LA APUESTA
+    public setMontoApostado(jugador: Jugador) {
         let apuestaValida = false;
         while(apuestaValida == false){
-            let apuesta = player.apostar();
-            if(this.validarMontoApostado(apuesta, player)){
+            let apuesta = jugador.apostar();
+            if(this.validarMontoApostado(apuesta, jugador)){
                 this.montoApostado = apuesta;
                 apuestaValida = true;
             }else{
             console.log('Ingrese nuevamente su apuesta ');
-
             }   
         }
     }    
-
-    public validarMontoApostado(montoApostado: number, player : Player): boolean{
+    //VALIDA EL MONTO APOSTADO
+    public validarMontoApostado(montoApostado: number, jugador : Jugador): boolean{
         let esValido = false;
-        let dineroDisponible = player.getvailableMoney();
+        let dineroDisponible = jugador.getDineroDisponible();
         if(montoApostado > 0 && montoApostado <= dineroDisponible && montoApostado >= this.apuestaMinima){
             esValido = true;
         }else if(montoApostado < this.apuestaMinima){
             console.log(color.red(`La apuesta mínima es de $ ${this.apuestaMinima}`));
         }else if(montoApostado > dineroDisponible){
             console.log(color.red(`No tiene suficiente dinero disponible. El dinero disponible es $ ${dineroDisponible}`));
-            saldoInsuficiente(player);
+            saldoInsuficiente(jugador);
         }else{
             console.log(color.red('El monto apostado no puede ser $0 ni negativo'));
         }
         return esValido;
     }
 
+    //SUMA O DESCUENTA EL PREMIO SEGÚN EL RESULTADO DEL JUEGO
     public sumarDescontarPremio(resultado: string, dinero: number): number{
         this.montoGanado = 0;
-        if(resultado === 'Win'){
+        if(resultado === 'Gano'){
             this.montoGanado += dinero;
             this.montoApostado = 0;
-        }else if(resultado === 'Lose') {
+        }else if(resultado === 'Perdio') {
             this.montoGanado -= this.montoApostado;
             this.montoApostado = 0;
-        }else if(resultado === 'noWinNoLose'){
+        }else if(resultado === 'noGanoNoPerdio'){
             this.montoApostado = 0;
         }
         return this.montoGanado;
     }
 
-    public play(player : Player): void{
+    //IMPLEMENTA METODO JUGAR() DE LA INTERFAZ QUE SERA MODIFICADO POR LAS CLASES HIJAS
+    public jugar(jugador : Jugador): void{
 
     }
-    public isWin(): number{
+
+    //IMPLEMENTA METODO ESGANADOR() DE LA INTERFAZ QUE SERA MODIFICADO POR LAS CLASES HIJAS
+    public esGanador(): number{
         return 0;
     }
 }

@@ -26,9 +26,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.main = exports.setMoney = exports.saldoInsuficiente = void 0;
+exports.main = exports.ingresarDinero = exports.saldoInsuficiente = void 0;
 const casino_1 = require("./casino");
-const player_1 = require("./player");
+const jugador_1 = require("./jugador");
 const blackjack_1 = require("./blackjack");
 const ruleta_1 = require("./ruleta");
 const readlineSync = __importStar(require("readline-sync"));
@@ -36,220 +36,231 @@ const fs = __importStar(require("fs"));
 const clear_1 = __importDefault(require("clear"));
 const tragamonedaEstandar_1 = require("./tragamonedaEstandar");
 const color = __importStar(require("colorette"));
-const casino = new casino_1.Casino("Las vegas", 18); //LINEA QUE CREA EL CASINO
-const urlWelcome = "../files/welcome.txt";
+const casino = new casino_1.Casino("Las vegas", 18); //LINEA QUE INSTANCIA EL CASINO
+//URL DE LOS ARCHIVOS .TXT
+const urlBienvenida = "../files/welcome.txt";
 const urlInfoJuegos = "../files/infoJuegos.txt";
 const urlInfoRuleta = "../files/infoRuleta.txt";
 const urlInfoBlackjack = "../files/infoBlackJack.txt";
 const urlInfoTragamonedas = "../files/infoTragamonedas.txt";
 const urlInfoTragamonedasEstandar = "../files/infoTragamonedasEstandar.txt";
 const urlInfoTragamonedasProgresiva = "../files/infoTragamonedasProgresivo.txt";
-function clearConsole() {
+//FUNCION QUE USA EL MODULO CLEAR DE NODE PARA BORRAR LA CONSOLA
+function borrarConsola() {
     (0, clear_1.default)();
 }
-//METODO QUE USA EL MODULO FS PARA LEER ARCHIVOS .TXT
-function readFile(urlFile) {
-    let readedText = fs.readFileSync(urlFile, 'utf-8'); //utilizo el metodo readFileSync del modulo fs
-    return readedText; //Retorno el texto leído del archivo
+//FUNCION QUE USA EL MODULO FS PARA LEER ARCHIVOS .TXT
+function leerArchivo(urlArchivo) {
+    let textoDeArchivo = fs.readFileSync(urlArchivo, 'utf-8'); //utilizo el metodo readFileSync del modulo fs
+    return textoDeArchivo; //Retorno el texto leído del archivo
 }
-//METODO PARA DARLE LA BIENVENIDA AL JUGADOR
-function welcome(name) {
-    let welcomeMessage = readFile(urlWelcome); //Leo las reglas del casino desde archivo txt
-    console.log(welcomeMessage);
-    let personalizedMessage = `Bienvenido ${name} al casino ${casino.getCasinoName()}`; //Creo un mensaje personalizado
-    console.log(personalizedMessage);
+//FUNCION PARA DARLE LA BIENVENIDA AL JUGADOR
+function darBienvenida(nombre) {
+    let mensajeBienvenida = leerArchivo(urlBienvenida); //Leo las reglas del casino desde archivo txt
+    console.log(mensajeBienvenida);
+    let mensajePersonalizado = `Bienvenido ${nombre} al casino ${casino.getNombreCasino()}`; //Creo un mensaje personalizado
+    console.log(mensajePersonalizado);
 }
-//METODO QUE INSTANCIA LOS JUEGOS DEPENDIENDO DE LA ELECCIÓN DEL JUGADOR
-function selectGame(player) {
+//FUNCION QUE MUESTRA EL MENU PRINCIPAL (JUGAR - COBRAR PREMIOS - SALIR)
+function mostrarMenuPrincipal(jugador) {
+    let listaOpcionesPrincipales = ['Jugar', 'Cobrar premios'];
+    let opcionElegida = readlineSync.keyInSelect(listaOpcionesPrincipales);
+    if (opcionElegida === 0) {
+        borrarConsola();
+        let infoJuegos = leerArchivo(urlInfoJuegos);
+        console.log(infoJuegos);
+        mostrarMenuJuegos(jugador);
+    }
+    else if (opcionElegida === 1) {
+        borrarConsola();
+        casino.transferirPremio(jugador);
+        mostrarMenuPrincipal(jugador);
+    }
+    else if (opcionElegida === -1) {
+        borrarConsola();
+        console.log(despedirJugador());
+    }
+}
+//FUNCION QUE MUESTRA EL MENU JUEGOS (BLACKJACK - RULETA- TRAG. PROGRESIVO - TRAG. ESTANDAR) AL JUGADOR
+function mostrarMenuJuegos(jugador) {
     console.log(color.red('Seleccione el juego que quiere jugar'));
-    let games = [color.blue('BlackJack'), color.red('Ruleta'), color.yellow('Tragamonedas'), color.magenta('Volver')]; //Declaro en un array las opciones
-    let option = readlineSync.keyInSelect(games); //Le paso al modulo keyInSelect el array
-    mostrarMenuJuegos(player, option);
+    let listaDeJuegos = [color.blue('BlackJack'), color.red('Ruleta'), color.yellow('Tragamonedas'), color.magenta('Volver')]; //Declaro en un array las opciones
+    let opcionElegida = readlineSync.keyInSelect(listaDeJuegos); //Le paso al modulo keyInSelect el array
+    seleccionarJuego(jugador, opcionElegida);
 }
-function mostrarMenuPrincipal(player) {
-    let opciones = ['Jugar', 'Cobrar premios'];
-    let opcion = readlineSync.keyInSelect(opciones);
-    if (opcion === 0) {
-        clearConsole();
-        let infoGames = readFile(urlInfoJuegos);
-        console.log(infoGames);
-        selectGame(player);
-    }
-    else if (opcion === 1) {
-        clearConsole();
-        casino.cobrarPremio(player);
-        mostrarMenuPrincipal(player);
-    }
-    else if (opcion === -1) {
-        clearConsole();
-        console.log(farewell());
-    }
-}
-function quiereSalir(player) {
+//FUNCIÓN QUE LE PREGUNTA AL JUGADOR SI QUIERE JUGAR AL JUEGO SELECCIONADO O VOLVER AL MENU
+function quiereSalir(jugador) {
     let salir = false;
-    let opciones = readlineSync.keyInSelect([color.green('Jugar'), color.red('Salir')]);
-    if (opciones === 1) {
+    let opcionSeleccionada = readlineSync.keyInSelect([color.green('Jugar'), color.red('Volver')]);
+    if (opcionSeleccionada === 1) {
         salir = true;
     }
-    else if (opciones !== 0) {
-        selectGame(player);
+    else if (opcionSeleccionada !== 0) {
+        mostrarMenuJuegos(jugador);
     }
     return salir;
 }
+//FUNCION QUE MUESTRA LAS REGLAS DE CADA JUEGO DEPENDIENDO DEL SELECCIONADO
 function mostrarReglas(juego) {
-    clearConsole();
+    borrarConsola();
     if (juego instanceof ruleta_1.Ruleta) {
-        console.log(readFile(urlInfoRuleta));
+        console.log(leerArchivo(urlInfoRuleta));
     }
     else if (juego instanceof blackjack_1.Blackjack) {
-        console.log(readFile(urlInfoBlackjack));
+        console.log(leerArchivo(urlInfoBlackjack));
     }
     else if (juego instanceof tragamonedaEstandar_1.TragamonedaEstandar) {
-        console.log(readFile(urlInfoTragamonedasEstandar));
+        console.log(leerArchivo(urlInfoTragamonedasEstandar));
     }
     else {
-        console.log(readFile(urlInfoTragamonedasProgresiva));
+        console.log(leerArchivo(urlInfoTragamonedasProgresiva));
     }
 }
-function mostrarMenuJuegos(player, option) {
-    if (option === 0) {
+//FUNCION QUE PERMITE EJECUTAR EL JUEGO SELECCIONADO
+function seleccionarJuego(jugador, opcionElegida) {
+    if (opcionElegida === 0) {
         mostrarReglas(casino.getBlackJack());
-        if (quiereSalir(player)) {
-            clearConsole();
-            selectGame(player);
+        if (quiereSalir(jugador)) {
+            borrarConsola();
+            mostrarMenuJuegos(jugador);
         }
         else {
-            casino.getBlackJack().play(player);
-            clearConsole();
-            selectGame(player);
+            casino.getBlackJack().jugar(jugador);
+            borrarConsola();
+            mostrarMenuJuegos(jugador);
         }
     }
-    else if (option === 1) {
+    else if (opcionElegida === 1) {
         mostrarReglas(casino.getRuleta());
-        if (quiereSalir(player)) {
-            clearConsole();
-            selectGame(player);
+        if (quiereSalir(jugador)) {
+            borrarConsola();
+            mostrarMenuJuegos(jugador);
         }
         else {
-            casino.getRuleta().play(player);
-            clearConsole();
-            selectGame(player);
+            casino.getRuleta().jugar(jugador);
+            borrarConsola();
+            mostrarMenuJuegos(jugador);
         }
     }
-    else if (option === 2) {
-        clearConsole();
-        console.log(readFile(urlInfoTragamonedas));
+    else if (opcionElegida === 2) {
+        borrarConsola();
+        console.log(leerArchivo(urlInfoTragamonedas));
         console.log('Selecciono Tragamonedas. Por favor seleccione el tipo de tragamonedas con el que quiere jugar');
-        let opciones = [color.blue('Tragamonedas Estandar'), color.red('Tragamonedas Progresivo'), color.green('Volver')];
-        let opcion = readlineSync.keyInSelect(opciones);
-        if (opcion === 0) {
+        let listaTragamonedas = [color.blue('Tragamonedas Estandar'), color.red('Tragamonedas Progresivo'), color.green('Volver')];
+        let opcionSeleccionada = readlineSync.keyInSelect(listaTragamonedas);
+        if (opcionSeleccionada === 0) {
             mostrarReglas(casino.getTragamonedasEstandar());
-            if (quiereSalir(player)) {
-                clearConsole();
-                selectGame(player);
+            if (quiereSalir(jugador)) {
+                borrarConsola();
+                mostrarMenuJuegos(jugador);
             }
             else {
-                clearConsole();
-                casino.getTragamonedasEstandar().play(player);
-                selectGame(player);
+                borrarConsola();
+                casino.getTragamonedasEstandar().jugar(jugador);
+                mostrarMenuJuegos(jugador);
             }
         }
-        else if (opcion === 1) {
+        else if (opcionSeleccionada === 1) {
             mostrarReglas(casino.getTragamonedasProgresivo());
-            if (quiereSalir(player)) {
-                clearConsole();
-                selectGame(player);
+            if (quiereSalir(jugador)) {
+                borrarConsola();
+                mostrarMenuJuegos(jugador);
             }
             else {
-                clearConsole();
-                casino.getTragamonedasProgresivo().play(player);
-                selectGame(player);
+                borrarConsola();
+                casino.getTragamonedasProgresivo().jugar(jugador);
+                mostrarMenuJuegos(jugador);
             }
         }
-        else if (opcion === 2) {
-            clearConsole();
-            selectGame(player);
+        else if (opcionSeleccionada === 2) {
+            borrarConsola();
+            mostrarMenuJuegos(jugador);
         }
         else {
-            clearConsole();
-            mostrarMenuPrincipal(player);
+            borrarConsola();
+            mostrarMenuPrincipal(jugador);
         }
     }
-    else if (option === 3) {
-        clearConsole();
-        mostrarMenuPrincipal(player);
+    else if (opcionElegida === 3) {
+        borrarConsola();
+        mostrarMenuPrincipal(jugador);
     }
     else {
-        clearConsole();
-        mostrarMenuPrincipal(player);
+        borrarConsola();
+        mostrarMenuPrincipal(jugador);
     }
 }
-//METODO QUE PERMITE SELECCIONAR EL JUEGO
-function saldoInsuficiente(player) {
+//FUNCION QUE PERMITE INGRESAR DINERO SI EL JUGADOR NO CUENTA CON EL VALOR SUFICIENTE PARA APOSTAR
+function saldoInsuficiente(jugador) {
     let respuesta = readlineSync.keyInYNStrict('¿Desea ingresar mas dinero?');
     if (respuesta) {
-        setMoney(player);
+        ingresarDinero(jugador);
     }
     else {
-        mostrarMenuPrincipal(player);
+        mostrarMenuPrincipal(jugador);
     }
 }
 exports.saldoInsuficiente = saldoInsuficiente;
-//METODO PARA INGRESAR DINERO
-function setMoney(player) {
-    let validate = false;
-    while (validate == false) {
-        let money = readlineSync.questionInt('Ingrese el monto de dinero: ');
-        if (money !== 0 && money > 0 && money < 1000000) {
-            player.setAvailableMoney(money);
-            clearConsole();
-            player.checkBalance();
-            validate = true;
+//FUNCION PARA INGRESAR DINERO
+function ingresarDinero(jugador) {
+    let esValido = false;
+    while (esValido == false) {
+        let dinero = readlineSync.questionInt('Ingrese el monto de dinero: ');
+        if (dinero !== 0 && dinero > 0 && dinero < 1000000) {
+            jugador.setDineroDisponible(dinero);
+            borrarConsola();
+            jugador.mostrarSaldo();
+            esValido = true;
         }
         else {
             console.log(color.red('Ingrese un monto mayor a $0 y menor a $1.000.000'));
         }
     }
 }
-exports.setMoney = setMoney;
-//METODO QUE PREGUNTA EL NOMBRE
-function askName() {
-    let isValido = false;
+exports.ingresarDinero = ingresarDinero;
+;
+//FUNCION QUE PREGUNTA EL NOMBRE
+function preguntarNombre() {
+    let esValido = false;
     const regex = /[~`!@#$%\^&*()\-_=+\[\]{}\\|;:",<.>\/?\d]/;
-    let firstName = '';
-    while (isValido == false) {
-        firstName = readlineSync.question('Ingrese su nombre: ');
-        if (!regex.test(firstName)) {
-            isValido = true;
+    let nombre = '';
+    while (esValido == false) {
+        nombre = readlineSync.question('Ingrese su nombre: ');
+        if (!regex.test(nombre)) {
+            esValido = true;
         }
         else {
             console.log(color.red('El nombre no puede contener números ni caracteres especiales'));
         }
     }
-    return firstName;
+    return nombre;
 }
-//METODO QUE INSTANCIA UN JUGADOR
-function newPlayer() {
-    let firstName = askName();
-    let player = new player_1.Player(firstName);
-    return player;
+;
+//FUNCION QUE INSTANCIA UN NUEVO JUGADOR
+function nuevoJuegador() {
+    let nombre = preguntarNombre();
+    let jugador = new jugador_1.Jugador(nombre);
+    return jugador;
 }
-//METODO QUE DESPIDE AL JUGADOR
-function farewell() {
+;
+//FUNCION QUE DESPIDE AL JUGADOR
+function despedirJugador() {
     return "Apreciamos su participación en nuestro casino y esperamos recibir su visita nuevamente. ¡Gracias por jugar con nosotros!";
 }
-//METODO PARA CORRER LA APLICACION
+;
+//FUNCION PARA CORRER LA APLICACION
 function main() {
-    clearConsole();
-    const access = casino.provideAccess(); //Valido la edad ingresada
-    if (access) { //Si cumple con la edad minima:
-        let player = newPlayer(); //Instancio un nuevo jugador
-        welcome(player.getFirstName()); //Le doy la bienvenida
-        setMoney(player);
-        mostrarMenuPrincipal(player); //Corro la función para que el jugador juege
+    borrarConsola();
+    const acceso = casino.verificarAcceso(); //Valido la edad ingresada
+    if (acceso) { //Si cumple con la edad minima:
+        let jugador = nuevoJuegador(); //Instancio un nuevo jugador
+        darBienvenida(jugador.getNombre()); //Le doy la bienvenida
+        ingresarDinero(jugador);
+        mostrarMenuPrincipal(jugador); //Corro la función para que el jugador juege
     }
     else {
-        console.log(color.red(`Lamentablemente, debido a las restricciones de edad, no es posible que juegues en nuestro casino si eres menor de ${casino.getMinimumAgeAllowed()} años.`));
+        console.log(color.red(`Lamentablemente, debido a las restricciones de edad, no es posible que juegues en nuestro casino si eres menor de ${casino.getEdadMinimaPermitida()} años.`));
     }
 }
 exports.main = main;
+;

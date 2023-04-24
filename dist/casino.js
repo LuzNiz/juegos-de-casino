@@ -32,45 +32,50 @@ const tragamonedaEstandar_1 = require("./tragamonedaEstandar");
 const color = __importStar(require("colorette"));
 class Casino {
     //CONSTRUCTOR
-    constructor(name, minimumAgeAllowed) {
-        this.casinoName = name;
-        this.minimumAgeAllowed = minimumAgeAllowed;
-        this.roulette = new ruleta_1.Ruleta("Ruleta", 1000);
+    constructor(nombre, edadMinimaPermitida) {
+        this.nombreCasino = nombre;
+        this.edadMinimaPermitida = edadMinimaPermitida;
+        this.ruleta = new ruleta_1.Ruleta("Ruleta", 1000);
         this.blackjack = new blackjack_1.Blackjack("BlackJack", 400);
         this.tragamonedaProgresivo = new tragamonedasProgresivo_1.TragamonedaProgresivo('Tragamoneda Progresiva', 1000);
         this.tragamonedaEstandar = new tragamonedaEstandar_1.TragamonedaEstandar('Tragamonedas Estandar', 500);
     }
     //GETTERS AND SETTERS
-    getCasinoName() { return this.casinoName; }
+    getNombreCasino() { return this.nombreCasino; }
     ;
-    setCasinoName(casinoName) { this.casinoName = casinoName; }
+    setNombreCasino(nombreCasino) { this.nombreCasino = nombreCasino; }
     ;
-    getMinimumAgeAllowed() { return this.minimumAgeAllowed; }
-    setMinimumAgeAllowed(minimumAgeAllowed) { this.minimumAgeAllowed = minimumAgeAllowed; }
+    getEdadMinimaPermitida() { return this.edadMinimaPermitida; }
+    ;
+    setEdadMinimaPermitida(edadMinimaPermitida) { this.edadMinimaPermitida = edadMinimaPermitida; }
     ;
     getBlackJack() { return this.blackjack; }
-    getRuleta() { return this.roulette; }
+    ;
+    getRuleta() { return this.ruleta; }
+    ;
     getTragamonedasProgresivo() { return this.tragamonedaProgresivo; }
+    ;
     getTragamonedasEstandar() { return this.tragamonedaEstandar; }
+    ;
     //METODO PARA VERIFICAR SI CUMPLE CON LOS REQUISITOS DE EDAD PARA INGRESAR
-    provideAccess() {
-        let ifAccess = false;
-        let access = false;
-        while (!ifAccess) {
+    verificarAcceso() {
+        let estaPermitido = false;
+        let accesso = false;
+        while (!estaPermitido) {
             const regex = /[~`!@#$%\^&*()\-_=+\[\]{}\\|;:",<.>\/?]/;
-            const ageStr = readlineSync.question('Por favor, ingrese su edad: ');
-            if (!regex.test(ageStr)) {
-                const age = Number(ageStr);
-                if (age !== 0 && age <= 99) {
-                    if (ageStr.startsWith('0')) {
+            const edadString = readlineSync.question('Por favor, ingrese su edad: ');
+            if (!regex.test(edadString)) {
+                const edad = Number(edadString);
+                if (edad !== 0 && edad <= 99) {
+                    if (edadString.startsWith('0')) {
                         console.log(color.red('Ingrese una edad sin 0s a la izquierda'));
                     }
                     else {
-                        if (age >= this.minimumAgeAllowed) {
-                            access = true;
-                            ifAccess = true;
+                        if (edad >= this.edadMinimaPermitida) {
+                            accesso = true;
+                            estaPermitido = true;
                         }
-                        ifAccess = true;
+                        estaPermitido = true;
                     }
                 }
                 else {
@@ -78,12 +83,12 @@ class Casino {
                 }
             }
         }
-        return access;
+        return accesso;
     }
-    cobrarPremio(player) {
-        if (player.getvailableMoney() > 0) {
-            console.log(`Le hemos transferido $ ${player.getvailableMoney()}`);
-            player.setAvailableMoney(0);
+    transferirPremio(jugador) {
+        if (jugador.getDineroDisponible() > 0) {
+            console.log(color.green(`Le hemos transferido $ ${jugador.getDineroDisponible()}`));
+            jugador.reiniciarDineroDisponible();
         }
         else {
             console.log(color.red('Usted no tiene dinero para cobrar'));

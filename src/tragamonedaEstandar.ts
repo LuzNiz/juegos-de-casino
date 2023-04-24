@@ -1,4 +1,4 @@
-import { Player } from "./player";
+import { Jugador } from "./jugador";
 import { Tragamonedas} from "./tragamonedas";
 import * as readlineSync from 'readline-sync';
 import clear from 'clear';
@@ -6,31 +6,31 @@ import * as color from "colorette";
 
 export class TragamonedaEstandar extends Tragamonedas {
 
-    constructor(name: string, apuestaMinima: number) {
-        super(name, apuestaMinima);
+    constructor(nombre: string, apuestaMinima: number) {
+        super(nombre, apuestaMinima);
     }
     
-    public isWin(): number {
+    public esGanador(): number {
         let resultado = '';
         if (this.numeros[0] === this.numeros[1] && this.numeros[1] === this.numeros[2]){ 
-            resultado = 'Win';
+            resultado = 'Gano';
             console.log(color.green(`¡Felicidades, ganaste!`));
         } else {
-            resultado = 'Lose';
+            resultado = 'Perdio';
             console.log(color.red("¡Casi, inténtalo de nuevo!"));
         } 
         this.numeros = [];         
         return this.sumarDescontarPremio(resultado, (this.montoApostado));
     }
 
-    public play(player: Player): void {
+    public jugar(jugador: Jugador): void {
         let seguirjugando = true;
         while(seguirjugando) {
-            this.setMontoApostado(player);
+            this.setMontoApostado(jugador);
             this.girar();
-            let montoGanado = this.isWin();
-            player.setAvailableMoney(montoGanado);
-            console.log(`Su saldo actual es de ${player.getvailableMoney()}`)
+            let montoGanado = this.esGanador();
+            jugador.setDineroDisponible(montoGanado);
+            console.log(`Su saldo actual es de ${jugador.getDineroDisponible()}`)
             const respuesta = readlineSync.keyInYNStrict('Desea seguir jugando? ');
             if(respuesta == false){
                 seguirjugando = false;

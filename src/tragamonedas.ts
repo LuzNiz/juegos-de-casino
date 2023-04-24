@@ -1,11 +1,11 @@
-import { Game } from "./game";
+import { Juego } from "./juego";
 import * as color from "colorette";
 
-export abstract class Tragamonedas extends Game{
+export abstract class Tragamonedas extends Juego{
   protected numeros : number[]
 
-    constructor(name: string, apuestaMinima: number) {
-      super(name, apuestaMinima);
+    constructor(nombre: string, apuestaMinima: number) {
+      super(nombre, apuestaMinima);
       this.numeros = [];
     }
     
