@@ -1,7 +1,8 @@
 # trabajo-final-poo
 Projecto final de Programación Orientada a Objetos (POO) de la Carrera Desarrollador Web Full-Stack
 
-Bienvenido al proyecto de casino online para jugar en la terminal, creado con Node.js. Este casino ofrece tres juegos populares de casino: ruleta, blackjack y tragamonedas. Además, la tragamonedas tiene dos variantes: estándar y progresiva.
+¡Bienvenido al proyecto de casino online para jugar en la terminal, creado con Node.js.!
+Este casino ofrece tres juegos populares de casino: ruleta, blackjack y tragamonedas. Además, la tragamonedas tiene dos variantes: estándar y progresiva.
 
 El objetivo de este proyecto es proporcionar a los usuarios una experiencia de casino realista en la comodidad de su propia terminal. Los jugadores pueden elegir entre diferentes juegos y variantes, y experimentar la emoción de ganar o perder.
 
