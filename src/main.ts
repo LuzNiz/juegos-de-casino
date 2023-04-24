@@ -206,7 +206,7 @@ function nuevoJuegador(): Jugador {
 };
 
 //FUNCION QUE DESPIDE AL JUGADOR
-function despedirJugador(): string{
+export function despedirJugador(): string{
     return "Apreciamos su participación en nuestro casino y esperamos recibir su visita nuevamente. ¡Gracias por jugar con nosotros!"
 };
 
@@ -219,7 +219,6 @@ export function main(): void {
         darBienvenida(jugador.getNombre()); //Le doy la bienvenida
         ingresarDinero(jugador);
         mostrarMenuPrincipal(jugador); //Corro la función para que el jugador juege
-
     } else {
         console.log(color.red(`Lamentablemente, debido a las restricciones de edad, no es posible que juegues en nuestro casino si eres menor de ${casino.getEdadMinimaPermitida()} años.`));
     }

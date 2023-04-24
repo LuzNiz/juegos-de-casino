@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.main = exports.ingresarDinero = exports.saldoInsuficiente = void 0;
+exports.main = exports.despedirJugador = exports.ingresarDinero = exports.saldoInsuficiente = void 0;
 const casino_1 = require("./casino");
 const jugador_1 = require("./jugador");
 const blackjack_1 = require("./blackjack");
@@ -247,6 +247,7 @@ function nuevoJuegador() {
 function despedirJugador() {
     return "Apreciamos su participación en nuestro casino y esperamos recibir su visita nuevamente. ¡Gracias por jugar con nosotros!";
 }
+exports.despedirJugador = despedirJugador;
 ;
 //FUNCION PARA CORRER LA APLICACION
 function main() {

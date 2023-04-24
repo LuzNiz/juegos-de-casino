@@ -88,12 +88,5 @@ class Juego {
         }
         return this.montoGanado;
     }
-    //IMPLEMENTA METODO JUGAR() DE LA INTERFAZ QUE SERA MODIFICADO POR LAS CLASES HIJAS
-    jugar(jugador) {
-    }
-    //IMPLEMENTA METODO ESGANADOR() DE LA INTERFAZ QUE SERA MODIFICADO POR LAS CLASES HIJAS
-    esGanador() {
-        return 0;
-    }
 }
 exports.Juego = Juego;

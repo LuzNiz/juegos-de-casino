@@ -66,12 +66,8 @@ export abstract class Juego implements iJugar{
     }
 
     //IMPLEMENTA METODO JUGAR() DE LA INTERFAZ QUE SERA MODIFICADO POR LAS CLASES HIJAS
-    public jugar(jugador : Jugador): void{
-
-    }
+    public abstract jugar(jugador : Jugador): void
 
     //IMPLEMENTA METODO ESGANADOR() DE LA INTERFAZ QUE SERA MODIFICADO POR LAS CLASES HIJAS
-    public esGanador(): number{
-        return 0;
-    }
+    public abstract esGanador(): number;
 }

@@ -2,16 +2,12 @@ import * as readlineSync from 'readline-sync';
 import { Juego } from './juego';
 import { Jugador } from './jugador';
 import * as color from "colorette";
+import { iCarta } from './carta';
 
-interface Carta {
-  valor: number;
-  palo: string;
-  texto: string;
-}
 export class Blackjack extends Juego{
-  private mazo: Carta[];
-  private manoJugador: Carta[];
-  private manoDealer: Carta[];
+  private mazo: iCarta[];
+  private manoJugador: iCarta[];
+  private manoDealer: iCarta[];
   private palos: string[];
   private valores: string[];
 
@@ -42,15 +38,15 @@ export class Blackjack extends Juego{
     }
   }
 
-  private repartirCarta(mano: Carta[]) {
+  private repartirCarta(mano: iCarta[]) {
     mano.push(this.mazo.pop()!);
   }
 
-  private mostrarMano(mano: Carta[]) {
+  private mostrarMano(mano: iCarta[]) {
     return mano.map(carta => carta.texto).join(', ');// .MAP utilizada para transformar cada objeto carta en una cadena de texto.
   }      
   // .JOIN une todas las cadenas de texto con una , y un espacio entre cada una.
-  private sumarMano(mano: Carta[]) {
+  private sumarMano(mano: iCarta[]) {
     let total = 0; // inicializo las dos variables
     let ases = 0;
     for (let carta of mano) { //recorro cada carta DE la mano

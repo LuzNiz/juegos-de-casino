@@ -9,8 +9,8 @@ import * as color from "colorette";
 export class Casino {
     private nombreCasino: string;
     private edadMinimaPermitida: number;
-    public ruleta :Ruleta;
-    public blackjack :Blackjack;
+    private ruleta :Ruleta;
+    private blackjack :Blackjack;
     private tragamonedaProgresivo: TragamonedaProgresivo;
     private tragamonedaEstandar: TragamonedaEstandar;
 
