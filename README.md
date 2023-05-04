@@ -1,4 +1,4 @@
-# trabajo-final-poo
+# Juegos de casino para terminal node.js
 Projecto final de Programación Orientada a Objetos (POO) de la Carrera Desarrollador Web Full-Stack
 
 ¡Bienvenido al proyecto de casino online para jugar en la terminal, creado con Node.js.!
